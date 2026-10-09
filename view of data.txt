@@ -1,0 +1,13 @@
+CREATE VIEW Product_Stock_Summary AS
+SELECT
+    p.Product_ID,
+    p.Product_Name,
+    c.Category_Name,
+    p.Price,
+    p.Stock_Quantity,
+    p.Reorder_Level
+FROM PRODUCT p
+JOIN CATEGORY c
+    ON p.Category_ID = c.Category_ID;
+
+SELECT * FROM Product_Stock_Summary;

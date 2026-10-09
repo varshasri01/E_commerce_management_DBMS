@@ -1,0 +1,207 @@
+CREATE DATABASE e_commerce_management;
+USE e_commerce_management;
+1. CATEGORY
+CREATE TABLE CATEGORY (
+    Category_ID INT PRIMARY KEY,
+    Category_Name VARCHAR(100) NOT NULL,
+    Description VARCHAR(255)
+);
+2. SUPPLIER
+CREATE TABLE SUPPLIER (
+    Supplier_ID INT PRIMARY KEY,
+    Supplier_Name VARCHAR(100) NOT NULL,
+    Email VARCHAR(100),
+    Phone VARCHAR(15),
+    Address VARCHAR(255),
+    City VARCHAR(50)
+);
+3. CUSTOMER
+CREATE TABLE CUSTOMER (
+    Customer_ID INT PRIMARY KEY,
+    Customer_Name VARCHAR(100) NOT NULL,
+    Email VARCHAR(100),
+    Phone VARCHAR(15),
+    Address VARCHAR(255),
+    City VARCHAR(50),
+    State VARCHAR(50),
+    Pincode VARCHAR(10)
+);
+4. PRODUCT
+CREATE TABLE PRODUCT (
+    Product_ID INT PRIMARY KEY,
+    Product_Name VARCHAR(100) NOT NULL,
+    Category_ID INT,
+    Supplier_ID INT,
+    Price DECIMAL(10,2),
+    Stock_Quantity INT,
+    Reorder_Level INT,
+    Description VARCHAR(255),
+    FOREIGN KEY (Category_ID)
+        REFERENCES CATEGORY(Category_ID),
+
+    FOREIGN KEY (Supplier_ID)
+        REFERENCES SUPPLIER(Supplier_ID)
+);
+5. ORDERS
+CREATE TABLE ORDERS (
+    Order_ID INT PRIMARY KEY,
+    Customer_ID INT,
+    Order_Date DATE,
+    Order_Status VARCHAR(30),
+    Shipping_Address VARCHAR(255),
+
+    FOREIGN KEY (Customer_ID)
+        REFERENCES CUSTOMER(Customer_ID)
+);
+6. SHOPPING CART
+CREATE TABLE SHOPPING_CART (
+    Cart_ID INT PRIMARY KEY,
+    Customer_ID INT UNIQUE,
+    Created_Date DATE,
+    Cart_Status VARCHAR(30),
+
+    FOREIGN KEY (Customer_ID)
+        REFERENCES CUSTOMER(Customer_ID)
+);
+7. ORDER DETAILS
+CREATE TABLE ORDER_DETAILS (
+    Order_Detail_ID INT PRIMARY KEY,
+    Order_ID INT,
+    Product_ID INT,
+    Quantity INT,
+    Unit_Price DECIMAL(10,2),
+    Subtotal DECIMAL(10,2),
+
+    FOREIGN KEY (Order_ID)
+        REFERENCES ORDERS(Order_ID),
+
+    FOREIGN KEY (Product_ID)
+        REFERENCES PRODUCT(Product_ID)
+);
+8. PAYMENTS
+CREATE TABLE PAYMENTS (
+    Payment_ID INT PRIMARY KEY,
+    Order_ID INT UNIQUE,
+    Payment_Date DATE,
+    Payment_Method VARCHAR(30),
+    Amount DECIMAL(10,2),
+    Payment_Status VARCHAR(30),
+    Transaction_Reference VARCHAR(100),
+
+    FOREIGN KEY (Order_ID)
+        REFERENCES ORDERS(Order_ID)
+);
+9. SHIPMENTS
+CREATE TABLE SHIPMENTS (
+    Shipment_ID INT PRIMARY KEY,
+    Order_ID INT UNIQUE,
+    Shipment_Date DATE,
+    Delivery_Date DATE,
+    Shipping_Address VARCHAR(255),
+    Courier_Name VARCHAR(100),
+    Tracking_Number VARCHAR(100),
+    Shipment_Status VARCHAR(30),
+
+    FOREIGN KEY (Order_ID)
+        REFERENCES ORDERS(Order_ID)
+);
+10. CART ITEM
+CREATE TABLE CART_ITEM (
+    Cart_Item_ID INT PRIMARY KEY,
+    Cart_ID INT,
+    Product_ID INT,
+    Quantity INT,
+
+    FOREIGN KEY (Cart_ID)
+        REFERENCES SHOPPING_CART(Cart_ID),
+
+    FOREIGN KEY (Product_ID)
+        REFERENCES PRODUCT(Product_ID)
+);
+11. RETURNS
+CREATE TABLE RETURNS (
+    Return_ID INT PRIMARY KEY,
+    Order_Detail_ID INT,
+    Return_Date DATE,
+    Return_Quantity INT,
+    Return_Reason VARCHAR(255),
+    Return_Status VARCHAR(30),
+
+    FOREIGN KEY (Order_Detail_ID)
+        REFERENCES ORDER_DETAILS(Order_Detail_ID)
+);
+CATEGORY DATA
+INSERT INTO CATEGORY VALUES
+(1, 'Electronics', 'Electronic products'),
+(2, 'Clothing', 'Clothing and fashion'),
+(3, 'Books', 'Books and study materials');
+SUPPLIER DATA
+INSERT INTO SUPPLIER VALUES
+(101, 'Tech Suppliers', 'tech@gmail.com', '9876543210',
+ 'Industrial Area', 'Chennai'),
+(102, 'Fashion World', 'fashion@gmail.com', '9876543211',
+ 'T Nagar', 'Chennai'),
+(103, 'Book House', 'books@gmail.com', '9876543212',
+ 'Anna Nagar', 'Chennai');
+CUSTOMER DATA
+INSERT INTO CUSTOMER VALUES
+(201, 'Arun Kumar', 'arun@gmail.com', '9876500001',
+ 'Anna Nagar', 'Chennai', 'Tamil Nadu', '600040'),
+(202, 'Priya Sharma', 'priya@gmail.com', '9876500002',
+ 'Velachery', 'Chennai', 'Tamil Nadu', '600042'),
+(203, 'Rahul Raj', 'rahul@gmail.com', '9876500003',
+ 'Adyar', 'Chennai', 'Tamil Nadu', '600020');
+PRODUCT DATA
+INSERT INTO PRODUCT VALUES
+(301, 'Wireless Mouse', 1, 101, 599.00, 50, 10,
+ 'Wireless optical mouse'),
+(302, 'Keyboard', 1, 101, 899.00, 40, 8,
+ 'USB keyboard'),
+(303, 'T-Shirt', 2, 102, 499.00, 100, 20,
+ 'Cotton T-Shirt'),
+(304, 'DBMS Book', 3, 103, 650.00, 30, 5,
+ 'Database Management System book');
+ORDER DATA
+INSERT INTO ORDERS VALUES
+(401, 201, '2026-10-01', 'Delivered',
+ 'Anna Nagar, Chennai'),
+(402, 202, '2026-10-01', 'Shipped',
+ 'Velachery, Chennai'),
+(403, 203, '2026-10-02', 'Processing',
+ 'Adyar, Chennai');
+SHOPPING CART DATA
+INSERT INTO SHOPPING_CART VALUES
+(501, 201, '2026-09-30', 'Active'),
+(502, 202, '2026-09-30', 'Active'),
+(503, 203, '2026-10-01', 'Active');
+ORDER DETAILS
+INSERT INTO ORDER_DETAILS VALUES
+(601, 401, 301, 2, 599.00, 1198.00),
+(602, 401, 304, 1, 650.00, 650.00),
+(603, 402, 303, 2, 499.00, 998.00),
+(604, 403, 302, 1, 899.00, 899.00);
+PAYMENTS
+INSERT INTO PAYMENTS VALUES
+(701, 401, '2026-10-01', 'UPI', 1848.00,
+ 'Paid', 'TXN10001'),
+(702, 402, '2026-10-01', 'Card', 998.00,
+ 'Paid', 'TXN10002'),
+(703, 403, '2026-10-02', 'UPI', 899.00,
+ 'Pending', 'TXN10003');
+SHIPMENTS
+INSERT INTO SHIPMENTS VALUES
+(801, 401, '2026-10-01', '2026-10-02',
+ 'Anna Nagar, Chennai', 'BlueDart',
+ 'BD10001', 'Delivered'),
+(802, 402, '2026-10-01', NULL,
+ 'Velachery, Chennai', 'Delhivery',
+ 'DL10002', 'In Transit');
+CART ITEMS
+INSERT INTO CART_ITEM VALUES
+(901, 501, 301, 1),
+(902, 501, 304, 1),
+(903, 502, 303, 2);
+RETURNS
+INSERT INTO RETURNS VALUES
+(1001, 601, '2026-10-02', 1,
+ 'Product not required', 'Requested');

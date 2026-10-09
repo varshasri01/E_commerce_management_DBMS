@@ -1,0 +1,54 @@
+1. BEST SELLING PRODUCT
+SELECT 
+    p.Product_ID,
+    p.Product_Name,
+    SUM(od.Quantity) AS Total_Quantity_Sold
+FROM PRODUCT p
+JOIN ORDER_DETAILS od
+    ON p.Product_ID = od.Product_ID
+GROUP BY p.Product_ID, p.Product_Name
+ORDER BY Total_Quantity_Sold DESC
+LIMIT 1;
+
+2. CUSTOMER WITH HIGHEST PURCHASES
+SELECT
+    c.Customer_ID,
+    c.Customer_Name,
+    SUM(od.Subtotal) AS Total_Purchase
+FROM CUSTOMER c
+JOIN ORDERS o
+    ON c.Customer_ID = o.Customer_ID
+JOIN ORDER_DETAILS od
+    ON o.Order_ID = od.Order_ID
+GROUP BY c.Customer_ID, c.Customer_Name
+ORDER BY Total_Purchase DESC;
+
+3. PRODUCTS BEFORE REORDER LEVEL
+SELECT
+    Product_ID,
+    Product_Name,
+    Stock_Quantity,
+    Reorder_Level
+FROM PRODUCT
+WHERE Stock_Quantity < Reorder_Level;
+
+4. CATEGORY WISE SALES
+SELECT
+    c.Category_Name,
+    SUM(od.Subtotal) AS Total_Sales
+FROM CATEGORY c
+JOIN PRODUCT p
+    ON c.Category_ID = p.Category_ID
+JOIN ORDER_DETAILS od
+    ON p.Product_ID = od.Product_ID
+GROUP BY c.Category_ID, c.Category_Name
+ORDER BY Total_Sales DESC;
+
+5. MONTHLY REVENUE
+SELECT
+    DATE_FORMAT(Payment_Date, '%Y-%m') AS Month,
+    SUM(Amount) AS Monthly_Revenue
+FROM PAYMENTS
+WHERE Payment_Status = 'Paid'
+GROUP BY DATE_FORMAT(Payment_Date, '%Y-%m')
+ORDER BY Month;
